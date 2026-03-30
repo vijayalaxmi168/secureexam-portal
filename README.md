@@ -1,141 +1,81 @@
 # 🛡️ SecureExam Portal
 
-A full-stack, high-security Online Exam Portal built with **Java 21 + Spring Boot 3.4** (backend) and **React 19** (frontend).
+SecureExam Portal
+A full-stack online examination portal where students can take proctored exams securely. The system is built to prevent cheating at every level — correct answers never leave the server, tab switching is tracked in real time, and three violations automatically terminate the exam session.
 
----
+What This Project Does
+Students log in and see a list of available exams. When they start an exam, questions are loaded from the server but the correct answers are never included in the response — they only exist in the database. A 30-minute countdown timer runs during the exam and automatically submits when time runs out. If a student switches tabs, a violation is recorded in the database. After three violations the exam is force-terminated and submitted automatically.
+Admins can create exams and add questions through protected API endpoints. All admin routes are blocked for students at the backend level.
 
-## ✅ Features
+Tech Stack
 
-### Backend
-| Feature | Detail |
-|---|---|
-| Stateless JWT Auth | Access token (15 min) + Refresh token (7 days) with rotation |
-| `jti` claim | Every access token has a unique UUID — auditable |
-| DTO Projection | `QuestionResponse` never includes `correctOption` |
-| Anti-Cheat Engine | 3 violations → exam force-terminated at service layer |
-| Global Exception Handler | `@RestControllerAdvice` — consistent JSON errors |
-| Role-based Access | `ROLE_ADMIN` / `ROLE_STUDENT` via `@PreAuthorize` |
-| Swagger UI | Full API docs at `http://localhost:8080/swagger-ui.html` |
-| Data Seeder | Auto-creates admin, student, and sample exam on startup |
+Backend — Java 21, Spring Boot 3.4, Spring Security 6, Spring Data JPA
+Database — MySQL
+Security — JWT with Refresh Token Rotation
+Frontend — React 19, Axios
+API Docs — Swagger UI
 
-### Frontend
-| Feature | Detail |
-|---|---|
-| Axios Interceptor | Auto-attaches JWT; silently refreshes on 401 |
-| Tab-switch detection | `visibilitychange` → POST `/api/violations` |
-| Auto-submit | Timer hits 0 → submits with reason `TIMER_EXPIRED` |
-| Force-terminate | 3rd violation → submits with `FORCE_TERMINATED` |
-| Right-click disabled | `contextmenu` blocked globally |
-| Copy/Paste disabled | `copy`, `paste`, `cut` blocked globally |
-| Dark Proctor UI | Custom CSS, no heavy UI library |
 
----
+Security Features
 
-## 🚀 Quick Start
+Correct answers are never sent to the client — enforced by the DTO layer
+JWT access tokens expire in 15 minutes
+Refresh tokens are single use — old token is deleted on every refresh
+Passwords are hashed using BCrypt with strength 12
+Anti-cheat violations are stored in the database and enforced on the server — not just JavaScript
+Students cannot submit an exam twice
 
-### Prerequisites
-- Java 21+
-- Maven 3.9+
-- MySQL 8+
-- Node.js 18+
 
----
+How to Run This Project
+Requirements
 
-### 1. Database Setup
+Java 21
+Maven
+MySQL 8
+Node.js
 
-```sql
-CREATE DATABASE exam_portal;
+Step 1 — Create the Database
+sqlCREATE DATABASE exam_portal;
 ```
 
-Update `backend/src/main/resources/application.properties` if needed:
-```properties
-spring.datasource.username=root
-spring.datasource.password=root
+### Step 2 — Configure Database Password
+
+Open `backend/src/main/resources/application.properties` and update:
+```
+spring.datasource.password=your_mysql_password
 ```
 
----
-
-### 2. Run the Backend
-
-```bash
+### Step 3 — Run the Backend
+```
 cd backend
 mvn spring-boot:run
 ```
 
-On startup, the `DataSeeder` automatically creates:
-- **Admin:**   `admin` / `admin123`
-- **Student:** `student1` / `student123`
-- **Sample Exam:** "Java Fundamentals — Midterm" with 5 MCQ questions
+The app will auto-create all tables and seed the following accounts on first run:
 
-Swagger UI: **http://localhost:8080/swagger-ui.html**
+| Username | Password | Role |
+|---|---|---|
+| admin | admin123 | Admin |
+| student1 | student123 | Student |
 
----
-
-### 3. Run the Frontend
-
-```bash
+### Step 4 — Run the Frontend
+```
 cd frontend
 npm install
 npm start
 ```
 
-Frontend runs at: **http://localhost:3000**
+Open **http://localhost:3000** in your browser.
 
----
-
-## 📁 Project Structure
-
+### API Documentation
 ```
-exam-portal/
-├── backend/
-│   ├── pom.xml
-│   └── src/main/java/com/examportal/
-│       ├── config/          SecurityConfig, OpenApiConfig, DataSeeder
-│       ├── controller/      AuthController, ExamController, ViolationController
-│       ├── dto/             13 clean DTOs (QuestionResponse has NO correctOption)
-│       ├── entity/          User, Exam, Question, ExamResult, ViolationAudit, RefreshToken
-│       ├── exception/       GlobalExceptionHandler + 3 custom exceptions
-│       ├── filter/          JwtFilter (OncePerRequestFilter)
-│       ├── repository/      5 JPA repositories
-│       ├── security/        JwtUtil, CustomUserDetailsService
-│       └── service/         AuthService, RefreshTokenService, ExamService
-└── frontend/
-    └── src/
-        ├── services/api.js  Axios + JWT interceptor + auto-refresh
-        ├── pages/           LoginPage, ExamListPage, ExamRoomPage, ResultPage, MyResultsPage
-        ├── App.js           State-machine router (no react-router)
-        └── index.css        Full dark proctor theme
-```
+http://localhost:8080/swagger-ui.html
 
----
+API Endpoints
+MethodEndpointAccessDescriptionPOST/api/auth/registerPublicRegister new studentPOST/api/auth/loginPublicLogin and get tokensPOST/api/auth/refreshPublicRefresh access tokenGET/api/examsStudentList all active examsGET/api/exams/{id}/startStudentStart exam — no correct answers includedPOST/api/exams/submitStudentSubmit answers and get scoreGET/api/exams/my-resultsStudentView past resultsPOST/api/examsAdminCreate a new examPOST/api/exams/questionsAdminAdd question to examPOST/api/violationsStudentRecord anti-cheat violation
 
-## 🔑 API Endpoints
+How the Anti-Cheat Works
+Every time a student switches to another tab, the browser sends a request to the violations endpoint. The backend saves this event with a timestamp. When the count reaches three, the backend returns a terminated flag. The frontend immediately submits the exam with the reason FORCE_TERMINATED. Even if someone disables JavaScript, the backend will still reject any further submissions from a terminated session.
 
-| Method | Endpoint | Auth | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | Public | Register student |
-| POST | `/api/auth/login` | Public | Login → tokens |
-| POST | `/api/auth/refresh` | Public | Rotate refresh token |
-| GET  | `/api/exams` | Student | List active exams |
-| GET  | `/api/exams/{id}/start` | Student | Get questions (no answers) |
-| POST | `/api/exams/submit` | Student | Submit answers |
-| GET  | `/api/exams/my-results` | Student | View own results |
-| POST | `/api/exams` | Admin | Create exam |
-| POST | `/api/exams/questions` | Admin | Add question |
-| POST | `/api/violations` | Student | Report violation |
-
----
-
-## 🎤 Interview Talking Points
-
-1. **Why DTOs?** — The `Question` entity has `correctOption` but `QuestionResponse` does not. Even if the HTTP response is intercepted, answers are never leaked.
-
-2. **Why stateless JWT?** — No server-side session storage. Every request is self-contained. Scales horizontally without sticky sessions.
-
-3. **How does anti-cheat work?** — `ViolationAudit` records every violation in the DB. The `ExamService` calls `enforceViolationLimit()` before loading questions AND before accepting submissions. A terminated student cannot do either.
-
-4. **Refresh token rotation?** — On every `/api/auth/refresh` call, the old refresh token is deleted and a new one is issued. Replaying a stolen token fails because it no longer exists in the DB.
-
-5. **Why `jti` in the JWT?** — Each access token gets a unique UUID. In a more advanced setup, you could maintain a revocation list of jtis to invalidate specific tokens before they expire.
-
-6. **`@RestControllerAdvice`** — Centralises all exception → HTTP response mapping. No controller ever writes error JSON manually, ensuring consistency.
+How Scoring Works
+The student sends their answers as a map of question ID to their chosen option. The server fetches the correct answers from the database and compares them independently. The client has no influence over the score — there is no way to manipulate it from the browser.
