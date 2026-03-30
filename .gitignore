@@ -1,0 +1,8 @@
+frontend/node_modules/
+backend/target/
+*.class
+.idea/
+.vscode/
+*.log
+Thumbs.db
+.DS_Store

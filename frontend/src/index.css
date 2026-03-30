@@ -1,0 +1,307 @@
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #0d0f14;
+  --bg-card:     #161921;
+  --bg-input:    #1e2230;
+  --border:      #2a2f42;
+  --accent:      #4f8ef7;
+  --accent-dark: #3a72d8;
+  --danger:      #e05252;
+  --success:     #3ecf8e;
+  --warning:     #f5a623;
+  --text:        #e2e8f0;
+  --text-muted:  #8892a4;
+  --radius:      10px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  /* Anti-cheat: disable selection globally */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Allow selection only on question text for readability, but block copy */
+.question-text { user-select: text; }
+
+/* ── Layout ───────────────────────────────────────────────────────────────── */
+.page-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.card-wide { max-width: 820px; }
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 6px; }
+h2 { font-size: 1.35rem; font-weight: 600; margin-bottom: 16px; }
+h3 { font-size: 1.1rem;  font-weight: 600; }
+.text-muted    { color: var(--text-muted); font-size: 0.875rem; }
+.text-accent   { color: var(--accent); }
+.text-danger   { color: var(--danger); }
+.text-success  { color: var(--success); }
+.text-warning  { color: var(--warning); }
+
+/* ── Form ─────────────────────────────────────────────────────────────────── */
+.form-group         { margin-bottom: 18px; }
+.form-group label   { display: block; margin-bottom: 6px; font-size: 0.875rem; color: var(--text-muted); }
+.form-group input   {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.form-group input:focus { border-color: var(--accent); }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.btn:active    { transform: scale(0.97); }
+.btn-primary   { background: var(--accent);  color: #fff; width: 100%; margin-top: 8px; padding: 12px; }
+.btn-primary:hover  { background: var(--accent-dark); }
+.btn-danger    { background: var(--danger);  color: #fff; }
+.btn-danger:hover   { background: #c04040; }
+.btn-success   { background: var(--success); color: #fff; }
+.btn-ghost     { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+.btn-ghost:hover    { border-color: var(--accent); color: var(--accent); }
+.btn:disabled  { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Error / Alert ────────────────────────────────────────────────────────── */
+.alert {
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-bottom: 14px;
+}
+.alert-error   { background: rgba(224,82,82,.15);  border: 1px solid var(--danger);  color: var(--danger); }
+.alert-success { background: rgba(62,207,142,.12); border: 1px solid var(--success); color: var(--success); }
+.alert-warning { background: rgba(245,166,35,.12); border: 1px solid var(--warning); color: var(--warning); }
+
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar-brand  { font-size: 1.1rem; font-weight: 700; color: var(--accent); letter-spacing: .5px; }
+.navbar-right  { display: flex; align-items: center; gap: 16px; }
+
+/* ── Exam list grid ───────────────────────────────────────────────────────── */
+.exam-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 32px;
+}
+.exam-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color .2s, transform .2s;
+}
+.exam-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.exam-card h3    { color: var(--text); }
+.exam-meta       { display: flex; gap: 16px; font-size: 0.8rem; color: var(--text-muted); }
+.exam-meta span  { display: flex; align-items: center; gap: 4px; }
+
+/* ── Exam room ────────────────────────────────────────────────────────────── */
+.exam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.exam-title      { font-size: 1.1rem; font-weight: 700; }
+.timer {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--success);
+  font-variant-numeric: tabular-nums;
+  transition: color .3s;
+}
+.timer.warning   { color: var(--warning); }
+.timer.danger    { color: var(--danger); animation: pulse 1s infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.exam-body       { max-width: 820px; margin: 0 auto; padding: 32px; }
+.question-card   {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+}
+.question-number { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; }
+.question-text   { font-size: 1rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+.options-grid    { display: grid; gap: 10px; }
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.option-label:hover    { border-color: var(--accent); background: rgba(79,142,247,.06); }
+.option-label.selected { border-color: var(--accent); background: rgba(79,142,247,.12); }
+.option-label input    { accent-color: var(--accent); width: 16px; height: 16px; }
+.option-key {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  background: var(--bg-input);
+  border-radius: 50%;
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.option-label.selected .option-key { background: var(--accent); color: #fff; }
+
+.submit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  position: sticky;
+  bottom: 0;
+}
+.answered-count  { color: var(--text-muted); font-size: 0.875rem; }
+
+/* ── Result ───────────────────────────────────────────────────────────────── */
+.result-card {
+  text-align: center;
+  padding: 48px 40px;
+}
+.score-circle {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  margin: 0 auto 28px;
+  border: 4px solid;
+  font-weight: 800;
+}
+.score-circle.passed { border-color: var(--success); color: var(--success); }
+.score-circle.failed { border-color: var(--danger);  color: var(--danger);  }
+.score-big   { font-size: 2.2rem; line-height: 1; }
+.score-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Results history ──────────────────────────────────────────────────────── */
+.results-table-wrap { padding: 32px; }
+.results-table      { width: 100%; border-collapse: collapse; }
+.results-table th, .results-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.results-table th  { color: var(--text-muted); font-weight: 600; }
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.badge-pass   { background: rgba(62,207,142,.15); color: var(--success); }
+.badge-fail   { background: rgba(224,82,82,.15);  color: var(--danger);  }
+
+/* ── Violation banner ─────────────────────────────────────────────────────── */
+.violation-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: var(--danger);
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 9999;
+  animation: slideDown .3s ease;
+}
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ── Loading spinner ──────────────────────────────────────────────────────── */
+.spinner-wrap { display: flex; align-items: center; justify-content: center; min-height: 200px; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Auth page logo ───────────────────────────────────────────────────────── */
+.auth-logo { text-align: center; margin-bottom: 28px; }
+.auth-logo .logo-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 6px;
+}
+.auth-switch { text-align: center; margin-top: 18px; font-size: 0.875rem; color: var(--text-muted); }
+.auth-switch a { color: var(--accent); cursor: pointer; text-decoration: none; }
+.auth-switch a:hover { text-decoration: underline; }
+
+/* ── Divider ──────────────────────────────────────────────────────────────── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
