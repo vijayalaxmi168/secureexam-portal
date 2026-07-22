@@ -40,53 +40,6 @@ A full-stack proctored exam portal where correct answers never leave the server,
 
 ---
 
-## 🚀 How to Run
-
-### Requirements
-- Java 21
-- Maven
-- MySQL 8
-- Node.js
-
-### Step 1 — Create Database
-```sql
-CREATE DATABASE exam_portal;
-```
-
-### Step 2 — Configure Password
-
-Open `backend/src/main/resources/application.properties`:
-```properties
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
-
-### Step 3 — Run Backend
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-Auto-seeded accounts on first run:
-
-| Username | Password | Role |
-|---|---|---|
-| admin | admin123 | ROLE_ADMIN |
-| student1 | student123 | ROLE_STUDENT |
-
-### Step 4 — Run Frontend
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Open → **http://localhost:3000**
-
-Swagger UI → **http://localhost:8080/swagger-ui.html**
-
----
-
 ## 📡 API Endpoints
 
 | Method | Endpoint | Access | Description |
