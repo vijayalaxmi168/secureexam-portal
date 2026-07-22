@@ -8,14 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * DataSeeder — runs once on application startup.
- *
- * Seeds:
- *  - admin   / admin123   (ROLE_ADMIN)
- *  - student1 / student123 (ROLE_STUDENT)
- *  - 1 sample exam "Java Fundamentals" with 5 MCQ questions
- */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
