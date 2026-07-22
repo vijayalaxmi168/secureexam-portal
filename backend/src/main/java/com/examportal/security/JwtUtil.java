@@ -11,15 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * JwtUtil — generates and validates JWTs.
- *
- * Key concepts used here (great for interviews):
- *  - HMAC-SHA256 signing: symmetric key, fast, secure for internal APIs
- *  - jti (JWT ID): unique UUID per token — enables revocation auditing
- *  - Subject: stores username — stateless identity lookup
- *  - Expiry: 15 minutes for access tokens — limits blast radius if stolen
- */
+
 @Component
 public class JwtUtil {
 
