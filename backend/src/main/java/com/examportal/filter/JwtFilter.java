@@ -16,19 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * JwtFilter — runs on every HTTP request exactly once.
- *
- * Flow:
- *  1. Read Authorization header → extract "Bearer <token>"
- *  2. Parse username from JWT
- *  3. Load UserDetails from DB
- *  4. Validate token (signature + expiry)
- *  5. Set Authentication in SecurityContext → Spring trusts this request
- *
- * If any step fails, the request continues unauthenticated.
- * Spring Security will then reject it if the endpoint is protected.
- */
+
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
